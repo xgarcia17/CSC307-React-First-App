@@ -1,9 +1,10 @@
 {
   "name": "reactfirstapp",
   "version": "1.0.0",
-  "description": "",
+  "description": "This app serves as my first React app in CSC 307: Intro to Software Engineering.",
   "main": "index.js",
   "scripts": {
+    "start": "cd packages/react-frontend && npm start",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "author": "",
@@ -13,5 +14,6 @@
   ],
   "dependencies": {
     "create-react-app": "^5.0.1"
-  }
+  },
+  "devDependencies": {}
 }
