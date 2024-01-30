@@ -15,5 +15,7 @@
   "dependencies": {
     "create-react-app": "^5.0.1"
   },
-  "devDependencies": {}
+  "devDependencies": {
+    "nodemon": "^3.0.3"
+  }
 }
