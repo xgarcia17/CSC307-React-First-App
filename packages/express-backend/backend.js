@@ -87,11 +87,22 @@ app.post("/users", (req, res) => {
   res.send();
 });
 
-const deleteUser = (user) => {
-  const index = users.indexOf(user);
-  users.splice(index, 1);
+const deleteUser = (userToDelete) => {
+  // const id = findUserById(user.id);
+  // const index = users.findIndex(user);
+  // for (var i = 0; i < users_list.length; i++) {
+  //   if (users_list[i].id === user.id) {
+  //     // users_list[i] = null;
+  //   }
+  // }
+  // users.splice(index, 1);
   //users["users_list"].delete(user);
-  return user;
+
+  users["users_list"] = users["users_list"].filter(
+    (user) => user["id"] !== userToDelete
+  );
+
+  return userToDelete;
 };
 
 app.delete("/users/:id", (req, res) => {
@@ -111,7 +122,6 @@ app.get("/users", (req, res) => {
   const job = req.query.job;
   if (name != undefined && job != undefined) {
     let result = findUserByNameAndJob(name, job);
-    console.log(result);
     result = { users_list: result };
     res.send(result);
   } else {
