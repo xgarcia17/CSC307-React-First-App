@@ -45,25 +45,6 @@ const users = {
   ],
 };
 
-// app.get("/users", (req, res) => {
-//   res.send(users);
-// });
-
-// const findUserByName = (name) => {
-//   return users["users_list"].filter((user) => user["name"] === name);
-// };
-
-// app.get("/users", (req, res) => {
-//   const name = req.query.name;
-//   if (name != undefined) {
-//     let result = findUserByName(name);
-//     result = { users_list: result };
-//     res.send(result);
-//   } else {
-//     res.send(users);
-//   }
-// });
-
 const findUserById = (id) =>
   users["users_list"].find((user) => user["id"] === id);
 
@@ -82,10 +63,29 @@ const addUser = (user) => {
   return user;
 };
 
+function generateRandomID() {
+  var id = "";
+  var temp;
+  // get first three letters
+  for (var i = 0; i < 3; i++) {
+    temp = Math.floor(Math.random() * 26 + 97); // range of lowercase ASCII values
+    id = id.concat(String.fromCharCode(temp));
+  }
+  // get last three numbers
+  for (var j = 0; j < 3; j++) {
+    temp = Math.floor(Math.random() * 10); // range of ints 0-9
+    id = id.concat(String(temp));
+  }
+
+  return id;
+}
+
 app.post("/users", (req, res) => {
+  const id = generateRandomID();
+  req.body["id"] = id;
   const userToAdd = req.body;
-  addUser(userToAdd);
-  res.send();
+  const user = addUser(userToAdd);
+  if (user) res.status(201).send("Success"); // return 201 on successful POST
 });
 
 const deleteUser = (userToDelete) => {
