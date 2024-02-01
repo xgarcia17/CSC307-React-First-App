@@ -85,7 +85,9 @@ app.post("/users", (req, res) => {
   req.body["id"] = id;
   const userToAdd = req.body;
   const user = addUser(userToAdd);
-  if (user) res.status(201).send("Success"); // return 201 on successful POST
+  if (user) {
+    res.status(201).send(user); // status: 201 on successful POST
+  }
 });
 
 const deleteUser = (userToDelete) => {
