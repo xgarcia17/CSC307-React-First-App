@@ -65,20 +65,22 @@ app.post("/users", (req, res) => {
   });
 });
 
-const deleteUser = (userToDelete) => {
-  const originalSize = users["users_list"].length;
-  users["users_list"] = users["users_list"].filter(
-    (user) => user["id"] !== userToDelete
-  );
-  if (originalSize <= users["users_list"].length) return false;
-  else return true;
-};
+// const deleteUser = (userToDelete) => {
+//   const originalSize = users["users_list"].length;
+//   users["users_list"] = users["users_list"].filter(
+//     (user) => user["id"] !== userToDelete
+//   );
+//   if (originalSize <= users["users_list"].length) return false;
+//   else return true;
+// };
 
 app.delete("/users/:id", (req, res) => {
   const userToDelete = req.params.id;
-  const ret = deleteUser(userToDelete);
-  if (ret === true) res.status(204).send();
-  else res.status(404).send("resource not found");
+  const promise = services.deleteUserById(userToDelete);
+  promise.then((ret) => {
+    if (ret) res.status(204).send();
+    else res.status(404).send("resource not found");
+  });
 });
 
 app.get("/users", (req, res) => {
