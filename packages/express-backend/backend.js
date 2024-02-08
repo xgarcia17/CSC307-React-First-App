@@ -1,5 +1,6 @@
 import express from "express";
 import cors from "cors";
+import services from "./Model/user-services.js";
 
 const app = express();
 const port = 8000;
@@ -15,53 +16,25 @@ app.listen(port, () => {
   console.log(`Example app listening at http://localhost:${port}`);
 });
 
-const users = {
-  users_list: [
-    {
-      id: "xyz789",
-      name: "Charlie",
-      job: "Janitor",
-    },
-    {
-      id: "abc123",
-      name: "Mac",
-      job: "Bouncer",
-    },
-    {
-      id: "ppp222",
-      name: "Mac",
-      job: "Professor",
-    },
-    {
-      id: "yat999",
-      name: "Dee",
-      job: "Aspring actress",
-    },
-    {
-      id: "zap555",
-      name: "Dennis",
-      job: "Bartender",
-    },
-  ],
-};
-
-const findUserById = (id) =>
-  users["users_list"].find((user) => user["id"] === id);
+// const findUserById = (id) =>
+//   users["users_list"].find((user) => user["id"] === id);
 
 app.get("/users/:id", (req, res) => {
   const id = req.params["id"]; //or req.params.id
-  let result = findUserById(id);
-  if (result === undefined) {
-    res.status(404).send("Resource not found.");
-  } else {
-    res.send(result);
-  }
+  let promise = services.findUserById(id);
+  promise.then((result) => {
+    if (result === undefined) {
+      res.status(404).send("Resource not found.");
+    } else {
+      res.send(result);
+    }
+  });
 });
 
-const addUser = (user) => {
-  users["users_list"].push(user);
-  return user;
-};
+// const addUser = (user) => {
+//   users["users_list"].push(user);
+//   return user;
+// };
 
 function generateRandomID() {
   var id = "";
@@ -84,10 +57,12 @@ app.post("/users", (req, res) => {
   const id = generateRandomID();
   req.body["id"] = id;
   const userToAdd = req.body;
-  const user = addUser(userToAdd);
-  if (user) {
-    res.status(201).send(user); // status: 201 on successful POST
-  }
+  const promise = services.addUser(userToAdd);
+  promise.then((user) => {
+    if (user) {
+      res.status(201).send(user); // status: 201 on successful POST
+    }
+  });
 });
 
 const deleteUser = (userToDelete) => {
@@ -106,20 +81,12 @@ app.delete("/users/:id", (req, res) => {
   else res.status(404).send("resource not found");
 });
 
-const findUserByNameAndJob = (name, job) => {
-  return users["users_list"]
-    .filter((user) => user["name"] === name)
-    .filter((user) => user["job"] === job);
-};
-
 app.get("/users", (req, res) => {
-  const name = req.query.name;
-  const job = req.query.job;
-  if (name != undefined && job != undefined) {
-    let result = findUserByNameAndJob(name, job);
-    result = { users_list: result };
-    res.send(result);
-  } else {
+  // console.log("name = ", req.query.name);
+  // console.log("job = ", req.query.job);
+  let promise = services.getUsers(req.query.name, req.query.job);
+  promise.then((users) => {
     res.send(users);
-  }
+    // console.log("users: ", users);
+  });
 });
